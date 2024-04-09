@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_icon_class/font_awesome_icon_class.dart';
-import 'package:social_media_app/core/contants/constants.dart';
+import 'package:social_media_app/core/constants/constants.dart';
 
 class PickImageWidget extends StatelessWidget {
   const PickImageWidget({

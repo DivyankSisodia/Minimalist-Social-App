@@ -6,8 +6,8 @@ class RoundedTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.prefixIcon,
-    required this.isPassword,
-    required this.keyboardType,
+    this.isPassword = false,
+    this.keyboardType = TextInputType.text,
     required this.textInputAction,
     this.validator,
   });
@@ -18,7 +18,7 @@ class RoundedTextField extends StatelessWidget {
   final bool isPassword;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
-  final String Function(String?)? validator;
+  final String? Function(String?)? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class RoundedTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(15),
         ),
         hintText: hintText,
         prefixIcon: Icon(prefixIcon),
@@ -35,7 +35,6 @@ class RoundedTextField extends StatelessWidget {
       keyboardType: keyboardType,
       textInputAction: textInputAction,
       validator: validator,
-      
     );
   }
 }
