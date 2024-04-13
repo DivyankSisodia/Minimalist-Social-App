@@ -9,7 +9,7 @@ import 'package:social_media_app/core/utils/utils.dart';
 import 'package:social_media_app/features/auth/model/user_model.dart';
 
 class AuthRepository {
-  final _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance; 
   final _storage = FirebaseStorage.instance;
   final _firestore = FirebaseFirestore.instance;
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_media_app/features/posts/presentation/screens/posts_screen.dart';
 
 class Constants {
   // Default padding for screens
@@ -49,10 +50,8 @@ class Constants {
     ];
   }
 
-  static List<Widget> Screens = const [
-    Center(
-      child: Text('Posts'),
-    ),
+  static List<Widget> screens = const [
+    PostsScreen(),
     Center(
       child: Text('Friends'),
     ),
