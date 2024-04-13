@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
-import 'package:social_media_app/core/constants/app_colors.dart';
+
+import '../../../../core/constants/app_colors.dart';
 
 class RoundProfileTile extends StatelessWidget {
   const RoundProfileTile({
@@ -12,7 +14,9 @@ class RoundProfileTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8.0,
+      ),
       child: CircleAvatar(
         radius: 20,
         backgroundColor: AppColors.greyColor,

@@ -1,27 +1,31 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:social_media_app/core/constants/app_colors.dart';
-import 'package:social_media_app/core/constants/constants.dart';
-import 'package:social_media_app/core/utils/utils.dart';
-import 'package:social_media_app/core/widgets/rounded_button.dart';
-import 'package:social_media_app/features/posts/presentation/widgets/image_video_view.dart';
-import 'package:social_media_app/features/posts/presentation/widgets/profile_info.dart';
 
-class CreatePostScreen extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/constants.dart';
+import '../../../../core/utils/utils.dart';
+import '../../../../core/widgets/rounded_button.dart';
+import '../../providers/post_provider.dart';
+import '../widgets/image_video_view.dart';
+import '../widgets/profile_info.dart';
+
+class CreatePostScreen extends ConsumerStatefulWidget {
   const CreatePostScreen({super.key});
 
   static const routeName = '/create-post';
 
   @override
-  State<CreatePostScreen> createState() => _CreatePostScreenState();
+  ConsumerState<CreatePostScreen> createState() => _CreatePostScreenState();
 }
 
-class _CreatePostScreenState extends State<CreatePostScreen> {
+class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   late final TextEditingController _postController;
   File? file;
-
   String fileType = 'image';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -39,10 +43,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: makePost,
             child: const Text('Post'),
           ),
         ],
@@ -54,22 +57,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ProfileInfo(),
-
-              // Post text field
+              // post text field
               TextField(
                 controller: _postController,
-                minLines: 1,
-                maxLines: 7,
                 decoration: const InputDecoration(
-                  hintText: 'What\'s on your mind?',
                   border: InputBorder.none,
+                  hintText: 'What\'s on your mind?',
                   hintStyle: TextStyle(
-                    color: AppColors.darkGreyColor,
                     fontSize: 18,
+                    color: AppColors.darkGreyColor,
                   ),
                 ),
                 keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 10,
               ),
+              const SizedBox(height: 20),
               file != null
                   ? ImageVideoView(
                       file: file!,
@@ -87,16 +90,37 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                         setState(() {});
                       },
                     ),
-
-              const SizedBox(
-                height: 20,
-              ),
-              RoundedButton(label: 'Post', onPressed: (){})
+              const SizedBox(height: 20),
+              isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : RoundedButton(
+                      onPressed: makePost,
+                      label: 'Post',
+                    ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<void> makePost() async {
+    setState(() => isLoading = true);
+    await ref
+        .read(postProvider)
+        .makePost(
+          content: _postController.text,
+          file: file!,
+          postType: fileType,
+        )
+        .then((value) {
+      Navigator.of(context).pop();
+    }).catchError((_) {
+      setState(() => isLoading = false);
+    });
+    setState(() => isLoading = false);
   }
 }
 

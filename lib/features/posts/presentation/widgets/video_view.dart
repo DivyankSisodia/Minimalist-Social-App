@@ -1,10 +1,12 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter/material.dart';
 
 class VideoView extends StatefulWidget {
-  const VideoView({super.key, required this.video});
+  const VideoView({
+    super.key,
+    required this.video,
+  });
 
   final File video;
 
@@ -40,28 +42,27 @@ class _VideoViewState extends State<VideoView> {
         children: [
           VideoPlayer(_videoController),
           Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
             top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: IconButton(
               onPressed: () {
-                if(isPlaying) {
+                if (isPlaying) {
                   _videoController.pause();
                 } else {
                   _videoController.play();
                 }
-                setState(() {
-                  isPlaying = !isPlaying;
-                });
+                isPlaying = !isPlaying;
+                setState(() {});
               },
               icon: Icon(
-                isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
+                isPlaying ? Icons.pause_circle : Icons.play_circle,
                 size: 50,
+                color: Colors.white,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

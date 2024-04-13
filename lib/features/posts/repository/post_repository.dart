@@ -1,13 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:social_media_app/core/constants/firebase_collection_names.dart';
-import 'package:social_media_app/core/constants/firebase_field_name.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../core/constants/firebase_collection_names.dart';
+import '../../../core/constants/firebase_field_name.dart';
 import '../model/post.dart';
 
 @immutable
@@ -16,15 +17,14 @@ class PostRepository {
   final _firestore = FirebaseFirestore.instance;
   final _storage = FirebaseStorage.instance;
 
-  // make posts
-  Future<String?> makePost(
-      {required String content,
-      required File file,
-      required String postType}) async {
+  // make post
+  Future<String?> makePost({
+    required String content,
+    required File file,
+    required String postType,
+  }) async {
     try {
       final postId = const Uuid().v1();
-
-      // who is creating a post
       final posterId = _auth.currentUser!.uid;
       final now = DateTime.now();
 
@@ -32,11 +32,9 @@ class PostRepository {
       final fileUid = const Uuid().v1();
       final path = _storage.ref(postType).child(fileUid);
       final taskSnapshot = await path.putFile(file);
-
-      // Get download URL
       final downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
-      // create our post
+      // Create our post
       Post post = Post(
         postId: postId,
         posterId: posterId,
@@ -44,10 +42,10 @@ class PostRepository {
         postType: postType,
         fileUrl: downloadUrl,
         createdAt: now,
-        likes: [],
+        likes: const [],
       );
 
-      // save post to firestore
+      // Post to firestore
       _firestore
           .collection(FirebaseCollectionNames.posts)
           .doc(postId)
@@ -60,30 +58,29 @@ class PostRepository {
   }
 
   // Like a post
-  Future<String?> likeDislikePost(
-      {required String postId, required List<String> likes}) async {
+  Future<String?> likeDislikePost({
+    required String postId,
+    required List<String> likes,
+  }) async {
     try {
-
-      // getting the current user
       final authorId = _auth.currentUser!.uid;
 
       if (likes.contains(authorId)) {
-        // if we have already liked the post, unlike it
+        // we already liked the post
         _firestore
             .collection(FirebaseCollectionNames.posts)
             .doc(postId)
             .update({
-              FirebaseFieldNames.likes: FieldValue.arrayRemove([authorId])
-            });
-      }
-      else{
-        // if we have not liked the post, like it
+          FirebaseFieldNames.likes: FieldValue.arrayRemove([authorId])
+        });
+      } else {
+        // we need to like the post
         _firestore
             .collection(FirebaseCollectionNames.posts)
             .doc(postId)
             .update({
-              FirebaseFieldNames.likes: FieldValue.arrayUnion([authorId])
-            });
+          FirebaseFieldNames.likes: FieldValue.arrayUnion([authorId])
+        });
       }
 
       return null;
@@ -91,4 +88,68 @@ class PostRepository {
       return e.toString();
     }
   }
+
+  // make comment
+  // Future<String?> makeComment({
+  //   required String text,
+  //   required String postId,
+  // }) async {
+  //   try {
+  //     final commentId = const Uuid().v1();
+  //     final authorId = _auth.currentUser!.uid;
+  //     final now = DateTime.now();
+
+  //     // Create our post
+  //     Comment comment = Comment(
+  //       commentId: commentId,
+  //       authorId: authorId,
+  //       postId: postId,
+  //       text: text,
+  //       createdAt: now,
+  //       likes: const [],
+  //     );
+
+  //     // Post to firestore
+  //     _firestore
+  //         .collection(FirebaseCollectionNames.comments)
+  //         .doc(commentId)
+  //         .set(comment.toMap());
+
+  //     return null;
+  //   } catch (e) {
+  //     return e.toString();
+  //   }
+  // }
+
+  // // Like a post
+  // Future<String?> likeDislikeComment({
+  //   required String commentId,
+  //   required List<String> likes,
+  // }) async {
+  //   try {
+  //     final authorId = _auth.currentUser!.uid;
+
+  //     if (likes.contains(authorId)) {
+  //       // we already liked the post
+  //       _firestore
+  //           .collection(FirebaseCollectionNames.comments)
+  //           .doc(commentId)
+  //           .update({
+  //         FirebaseFieldNames.likes: FieldValue.arrayRemove([authorId])
+  //       });
+  //     } else {
+  //       // we need to like the post
+  //       _firestore
+  //           .collection(FirebaseCollectionNames.comments)
+  //           .doc(commentId)
+  //           .update({
+  //         FirebaseFieldNames.likes: FieldValue.arrayUnion([authorId])
+  //       });
+  //     }
+
+  //     return null;
+  //   } catch (e) {
+  //     return e.toString();
+  //   }
+  // }
 }

@@ -1,7 +1,6 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:social_media_app/core/constants/firebase_field_name.dart';
+
+import '../../../core/constants/firebase_field_name.dart';
 
 @immutable
 class Post {
@@ -28,22 +27,26 @@ class Post {
       FirebaseFieldNames.postId: postId,
       FirebaseFieldNames.posterId: posterId,
       FirebaseFieldNames.content: content,
-      FirebaseFieldNames.postType: postType,
       FirebaseFieldNames.fileUrl: fileUrl,
       FirebaseFieldNames.datePublished: createdAt.millisecondsSinceEpoch,
       FirebaseFieldNames.likes: likes,
+      FirebaseFieldNames.postType: postType,
     };
   }
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
-      postId: map['postId'] as String,
-      posterId: map['posterId'] as String,
-      content: map['content'] as String,
-      postType: map['postType'] as String,
-      fileUrl: map['fileUrl'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      likes: List<String>.from((map['likes'] as List<String>)),
+      postId: map[FirebaseFieldNames.postId] ?? '',
+      posterId: map[FirebaseFieldNames.posterId] ?? '',
+      content: map[FirebaseFieldNames.content] ?? '',
+      postType: map[FirebaseFieldNames.postType] ?? '',
+      fileUrl: map[FirebaseFieldNames.fileUrl] ?? '',
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+        map[FirebaseFieldNames.datePublished] ?? 0,
+      ),
+      likes: List<String>.from(
+        (map[FirebaseFieldNames.likes] ?? []),
+      ),
     );
   }
 }
