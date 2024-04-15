@@ -1,25 +1,28 @@
 import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:social_media_app/core/constants/firebase_collection_names.dart';
-import 'package:social_media_app/core/constants/firebase_field_name.dart';
+
+import '../../../core/constants/firebase_collection_names.dart';
+import '../../../core/constants/firebase_field_name.dart';
 import '../model/post.dart';
 
-final getAllVideosProvider = StreamProvider((ref) {
+final getAllVideosProvider = StreamProvider.autoDispose<Iterable<Post>>((ref) {
   final controller = StreamController<Iterable<Post>>();
 
   final sub = FirebaseFirestore.instance
       .collection(FirebaseCollectionNames.posts)
       .where(FirebaseFieldNames.postType, isEqualTo: 'video')
-      .orderBy(FirebaseFieldNames.createdAt, descending: true)
+      .orderBy(FirebaseFieldNames.datePublished, descending: true)
       .snapshots()
-      .listen((snap) {
-    final post = snap.docs.map(
+      .listen((snapshot) {
+    final posts = snapshot.docs.map(
       (postData) => Post.fromMap(
         postData.data(),
       ),
     );
-    controller.sink.add(post);
+    controller.sink.add(posts);
   });
 
   ref.onDispose(() {
