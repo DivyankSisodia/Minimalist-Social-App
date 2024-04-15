@@ -1,11 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:social_media_app/core/widgets/post_info_tile.dart';
 
 import '../../../../core/screens/error_screen.dart';
 import '../../../../core/screens/loader.dart';
 import '../../providers/get_all_posts_provider.dart';
 import '../widgets/make_post.dart';
+import '../widgets/post_tile.dart';
 
 class PostsScreen extends StatelessWidget {
   const PostsScreen({super.key});
@@ -46,7 +47,9 @@ class PostsList extends ConsumerWidget {
           separatorBuilder: (context, index) => const SizedBox(height: 8),
           itemBuilder: (context, index) {
             final post = postsList.elementAt(index);
-            return Text(post.content);
+            return PostTile(
+              post: post,
+            );
           },
         );
       },
