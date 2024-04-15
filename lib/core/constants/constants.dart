@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:social_media_app/features/posts/presentation/screens/posts_screen.dart';
+import 'package:social_media_app/features/posts/presentation/screens/video_screen.dart';
 
 class Constants {
   // Default padding for screens
@@ -55,9 +56,7 @@ class Constants {
     Center(
       child: Text('Friends'),
     ),
-    Center(
-      child: Text('video'),
-    ),
+    VideosScreen(),
     Center(
       child: Text('account'),
     ),
