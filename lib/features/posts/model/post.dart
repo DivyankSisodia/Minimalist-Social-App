@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart' show immutable;
 
 import '../../../core/constants/firebase_field_name.dart';
